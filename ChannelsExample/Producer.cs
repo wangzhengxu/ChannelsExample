@@ -5,18 +5,31 @@ using System.Threading.Tasks;
 
 namespace ChannelsExample
 {
-    public class Producer<T>
+    public class Producer
     {
-        private readonly ChannelWriter<T> _writer;
+        private readonly ChannelWriter<string> _writer;
 
-        public Producer(ChannelWriter<T> writer)
+        public Producer(ChannelWriter<string> writer)
         {
             _writer = writer;
         }
-        public async Task PublishAsync(T t, CancellationToken cancellationToken = default)
+        public async Task PublishAsync(string msg, CancellationToken cancellationToken = default)
         {
-            await _writer.WriteAsync(t, cancellationToken);
-            Logger.ToConsole($"published a message:{t}",ConsoleColor.DarkGray);
+            await _writer.WriteAsync(msg, cancellationToken);
+            Logger.ToConsole($"published a message:{msg}",ConsoleColor.DarkGray);
+        }
+        public async Task TryPublishAsync(string msg, CancellationToken cancellationToken = default)
+        {
+            while (await _writer.WaitToWriteAsync(cancellationToken))
+            {
+                if (_writer.TryWrite(msg))
+                {
+                    Logger.ToConsole($"published a message:{msg}", ConsoleColor.DarkGray);
+                    return;
+                }
+
+                Logger.ToConsole("Unsuccessful writing, wait for the next opportunity", ConsoleColor.DarkGray);
+            }
         }
     }
 }

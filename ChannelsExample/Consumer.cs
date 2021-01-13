@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace ChannelsExample
 {
-    public class Consumer<T>
+    public class Consumer
     {
-        private readonly ChannelReader<T> _reader;
+        private readonly ChannelReader<string> _reader;
 
-        public Consumer(ChannelReader<T> reader)
+        public Consumer(ChannelReader<string> reader)
         {
             _reader = reader;
         }

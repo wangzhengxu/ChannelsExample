@@ -13,14 +13,6 @@ namespace ChannelsExample
         {
             const int maxMessagesToBuffer = 10;
             var channel = Channel.CreateBounded<string>(maxMessagesToBuffer);
-            //            var producer1 = new Producer(channel.Writer);
-            //            var consumer1 = new Consumer(channel.Reader);
-            //            var cancelSource = new CancellationTokenSource();
-            //            var cancelToken = cancelSource.Token;
-            //            var consumerTask = consumer1.ConsumeDataAsync(cancelToken);
-            //            var producerTask = producer1.TryPublishAsync("hello", cancelToken);
-            //            await producerTask.ContinueWith(_ => channel.Writer.Complete(), cancelToken);
-            //            await consumerTask;
             var cancelSource = new CancellationTokenSource();
             var cancelToken = cancelSource.Token;
             var tasks = new List<Task>(DispatchConsumers(channel, 1, cancelToken))
